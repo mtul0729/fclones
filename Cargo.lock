@@ -529,14 +529,11 @@ dependencies = [
  "ignore",
  "indexmap 2.0.2",
  "itertools",
- "lazy-init",
  "lazy_static",
  "libc",
- "maplit",
  "metrohash",
  "nix",
  "nom",
- "nom-regex",
  "num_cpus",
  "priority-queue",
  "rand",
@@ -808,12 +805,6 @@ dependencies = [
 ]
 
 [[package]]
-name = "lazy-init"
-version = "0.5.1"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "9f40963626ac12dcaf92afc15e4c3db624858c92fd9f8ba2125eaada3ac2706f"
-
-[[package]]
 name = "lazy_static"
 version = "1.4.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -846,12 +837,6 @@ name = "log"
 version = "0.4.20"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "b5e6163cb8c49088c2c36f57875e58ccd8c87c7427f7fbd50ea6710b2f3f2e8f"
-
-[[package]]
-name = "maplit"
-version = "1.0.2"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "3e2e65a1a2e43cfcb47a895c4c8b10d1f4a61097f9f254f183aee60cad9c651d"
 
 [[package]]
 name = "memchr"
@@ -899,16 +884,6 @@ checksum = "d273983c5a657a70a3e8f2a01329822f3b8c8172b73826411a55751e404a0a4a"
 dependencies = [
  "memchr",
  "minimal-lexical",
-]
-
-[[package]]
-name = "nom-regex"
-version = "0.2.0"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "72e5c7731c4c1370b61604ed52a2475e861aac9e08dec9f23903d4ddfdc91c18"
-dependencies = [
- "nom",
- "regex",
 ]
 
 [[package]]

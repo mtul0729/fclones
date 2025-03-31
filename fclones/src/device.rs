@@ -2,9 +2,11 @@ use core::cmp;
 use std::collections::HashMap;
 use std::ffi::{OsStr, OsString};
 use std::ops::Index;
+use std::sync::OnceLock;
 
 use itertools::Itertools;
-use lazy_init::Lazy;
+//use lazy_init::Lazy;
+
 use rayon::{ThreadPool, ThreadPoolBuilder};
 use sysinfo::{DiskExt, DiskKind, System, SystemExt};
 
@@ -52,8 +54,8 @@ pub struct DiskDevice {
     pub disk_kind: DiskKind,
     pub file_system: String,
     pub parallelism: Parallelism,
-    seq_thread_pool: Lazy<ThreadPool>,
-    rand_thread_pool: Lazy<ThreadPool>,
+    seq_thread_pool: OnceLock<ThreadPool>,
+    rand_thread_pool: OnceLock<ThreadPool>,
 }
 
 impl DiskDevice {
@@ -70,8 +72,8 @@ impl DiskDevice {
             disk_kind,
             file_system,
             parallelism,
-            seq_thread_pool: Lazy::new(),
-            rand_thread_pool: Lazy::new(),
+            seq_thread_pool: OnceLock::new(),
+            rand_thread_pool: OnceLock::new(),
         }
     }
 
@@ -84,12 +86,12 @@ impl DiskDevice {
 
     pub fn seq_thread_pool(&self) -> &ThreadPool {
         self.seq_thread_pool
-            .get_or_create(|| Self::build_thread_pool(self.parallelism.sequential))
+            .get_or_init(|| Self::build_thread_pool(self.parallelism.sequential))
     }
 
     pub fn rand_thread_pool(&self) -> &ThreadPool {
         self.rand_thread_pool
-            .get_or_create(|| Self::build_thread_pool(self.parallelism.random))
+            .get_or_init(|| Self::build_thread_pool(self.parallelism.random))
     }
 
     pub fn min_prefix_len(&self) -> FileLen {
