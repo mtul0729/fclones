@@ -529,7 +529,6 @@ dependencies = [
  "ignore",
  "indexmap 2.0.2",
  "itertools",
- "lazy_static",
  "libc",
  "metrohash",
  "nix",

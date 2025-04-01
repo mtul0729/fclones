@@ -2,7 +2,6 @@
 #![allow(unused_imports)]
 
 use crate::semaphore::Semaphore;
-use lazy_static::lazy_static;
 use std::sync::Arc;
 
 #[cfg(unix)]
@@ -39,14 +38,15 @@ fn rlimit_nofile() -> libc::rlim_t {
 const OTHER_OPEN_FILES: isize = 3 + 2;
 
 #[cfg(unix)]
-lazy_static! {
-    // Globally track the number of opened files so many parallel operations do not raise
-    // "Too many open files (os error 24)".
-    pub static ref RLIMIT_OPEN_FILES: Arc<Semaphore> = Arc::new(Semaphore::new(std::cmp::max(
-        rlimit_nofile() as isize - OTHER_OPEN_FILES,
-        64 // fallback value
-    )));
-}
+// Globally track the number of opened files so many parallel operations do not raise
+// "Too many open files (os error 24)".
+pub static RLIMIT_OPEN_FILES: std::sync::LazyLock<Arc<Semaphore>> =
+    std::sync::LazyLock::new(|| {
+        Arc::new(Semaphore::new(std::cmp::max(
+            rlimit_nofile() as isize - OTHER_OPEN_FILES,
+            64, // fallback value
+        )))
+    });
 
 #[cfg(not(unix))]
 pub mod not_unix {
@@ -63,6 +63,5 @@ pub mod not_unix {
     }
 }
 #[cfg(not(unix))]
-lazy_static! {
-    pub static ref RLIMIT_OPEN_FILES: not_unix::NoRlimit = not_unix::NoRlimit::new();
-}
+pub static RLIMIT_OPEN_FILES: std::sync::LazyLock<not_unix::NoRlimit> =
+    std::sync::LazyLock::new(|| not_unix::NoRlimit::new());
